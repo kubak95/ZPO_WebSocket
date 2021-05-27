@@ -1,0 +1,8 @@
+{
+    "maven.view": "flat",
+    "java.project.sourcePaths": [
+        "Siara/Lab2_Zad2/src",
+        "client_kolaczynski/client_kolaczynski/src/main/java/pl/kolaczynskijakub/websocketclient"
+    ],
+    "java.configuration.updateBuildConfiguration": "interactive"
+}
