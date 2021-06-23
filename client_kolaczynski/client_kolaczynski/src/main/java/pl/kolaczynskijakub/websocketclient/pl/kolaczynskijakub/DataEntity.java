@@ -1,6 +1,6 @@
 package pl.kolaczynskijakub.websocketclient.pl.kolaczynskijakub;
 
-public class CRUD {
+public class DataEntity {
     public int id;
     public String name;
     public String surname;

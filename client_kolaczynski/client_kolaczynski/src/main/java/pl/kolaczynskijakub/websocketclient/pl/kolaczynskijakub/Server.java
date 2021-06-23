@@ -46,9 +46,6 @@ public class Server extends WebSocketServer {
 
         try {
             Gson gson = new Gson();
-            // String json = "{\"operation\":\"update\", \"data\":{\"id\": 1,
-            // \"name\":\"Stas\", \"surname\":\"Kucharski\",
-            // \"email\":\"skucharski@onet.pl\"}}";
             System.out.println("operation:\n" + message);
             CRUDOperations operation = gson.fromJson(message, CRUDOperations.class);
             String operationType = operation.operation;
@@ -59,7 +56,7 @@ public class Server extends WebSocketServer {
                     break;
                 }
                 case "read": {
-                    operation.crudRead();
+                    conn.send(operation.crudRead());
                     break;
                 }
                 case "delete": {
@@ -76,7 +73,6 @@ public class Server extends WebSocketServer {
         }
 
         LOGGER.info("onMessage: {}", message);
-        // conn.send("Yes, How Can I Serve You?");
         conn.send("Yes, How Can I serve you ?");
         connections.stream().filter(ws -> !conn.equals(ws)).forEach(ws -> {
             ws.send(message);
