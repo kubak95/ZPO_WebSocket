@@ -9,6 +9,8 @@ import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import com.google.gson.Gson;
+import pl.kolaczynskijakub.websocketclient.pl.kolaczynskijakub.CRUDOperations;
 
 public class Server extends WebSocketServer {
     private static final Logger LOGGER = LoggerFactory.getLogger(Application.class);
@@ -41,6 +43,38 @@ public class Server extends WebSocketServer {
     @Override
     public void onMessage(WebSocket conn, String message) {
         // TODO Auto-generated method stub
+
+        try {
+            Gson gson = new Gson();
+            // String json = "{\"operation\":\"update\", \"data\":{\"id\": 1,
+            // \"name\":\"Stas\", \"surname\":\"Kucharski\",
+            // \"email\":\"skucharski@onet.pl\"}}";
+            System.out.println("operation:\n" + message);
+            CRUDOperations operation = gson.fromJson(message, CRUDOperations.class);
+            String operationType = operation.operation;
+            System.out.println("operation - " + message + " operationType - " + operationType);
+            switch (operationType) {
+                case "create": {
+                    operation.crudCreate();
+                    break;
+                }
+                case "read": {
+                    operation.crudRead();
+                    break;
+                }
+                case "delete": {
+                    operation.crudDelete();
+                    break;
+                }
+                case "update": {
+                    operation.crudUpdate();
+                    break;
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("Not a valid json");
+        }
+
         LOGGER.info("onMessage: {}", message);
         // conn.send("Yes, How Can I Serve You?");
         conn.send("Yes, How Can I serve you ?");
