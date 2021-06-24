@@ -16,7 +16,8 @@ public class HibernateUtil {
 
     static Configuration configuration = new Configuration().configure("hibernate.cfg.xml");
     private final static Properties properties = configuration.getProperties();
-    private final static ServiceRegistry serviceRegistry = new ServiceRegistryBuilder().applySettings(properties).buildServiceRegistry();
+    private final static ServiceRegistry serviceRegistry = new ServiceRegistryBuilder().applySettings(properties)
+            .buildServiceRegistry();
     private final static SessionFactory sessionFactory = configuration.buildSessionFactory(serviceRegistry);
 
     public void crudCreate(DataEntity data) {
@@ -28,13 +29,9 @@ public class HibernateUtil {
 
         try {
             session = sessionFactory.openSession();
-            System.out.println("\n\n\nsessionFactory.openSession");
             transaction = session.beginTransaction();
-            System.out.println("\n\n\nsession.beginTransaction");
             // start a transaction
-            System.out.println("ID - " + String.valueOf(data.id) + "  email - " + data.email);
             session.save(data);
-            System.out.println("\n\n\nsave(data)");
             // commit transaction
             transaction.commit();
         } catch (Exception e) {
@@ -48,17 +45,7 @@ public class HibernateUtil {
 
     public String crudRead(DataEntity data) {
         System.out.println("crudRead");
-        // String output = "ID - " + String.valueOf(data.id) + " Name " + data.name + "
-        // Surname - " + data.surname + " Email - " + data.email;
-        // return output;
-        SessionFactory sessionFactory = null;
-        ServiceRegistry serviceRegistry = null;
-        Configuration configuration = new Configuration();
-        configuration.configure();
-        Properties properties = configuration.getProperties();
-        serviceRegistry = new StandardServiceRegistryBuilder().applySettings(properties).build();
-        sessionFactory = configuration.buildSessionFactory(serviceRegistry);
-        System.out.println("crudCreate");
+
         Transaction transaction = null;
         Session session = null;
         String output = "";
@@ -68,10 +55,9 @@ public class HibernateUtil {
             // start a transaction
             DataEntity dataEntity = (DataEntity) session.get(DataEntity.class, data.id);
             // commit transaction
-            output = "ID - " + String.valueOf(dataEntity.id) + " Name " + dataEntity.name + "Surname - "
+            output = "ID - " + String.valueOf(dataEntity.id) + " Name " + dataEntity.name + " Surname - "
                     + dataEntity.surname + " Email - " + dataEntity.email;
             transaction.commit();
-            System.out.println("\n\n\n\n\n\n\nTest Print inside Try \n\n\n\n\n\n");
 
         } catch (Exception e) {
             if (transaction != null) {
@@ -79,17 +65,48 @@ public class HibernateUtil {
             }
             e.printStackTrace();
         }
-        System.out.println("\n\n\n\n\n\n\nTest Print\n" + output + "\n\n\n\n\n");
         return output;
     }
 
-    public void crudDelete() {
+    public void crudDelete(DataEntity data) {
         System.out.println("crudDelete");
+
+        Transaction transaction = null;
+        Session session = null;
+
+        try {
+            session = sessionFactory.openSession();
+            transaction = session.beginTransaction();
+            // start a transaction
+            session.delete(data);
+            // commit transaction
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            e.printStackTrace();
+        }
     }
 
-    public void crudUpdate() {
+    public void crudUpdate(DataEntity data) {
         System.out.println("crudUpdate");
-        ;
+        Transaction transaction = null;
+        Session session = null;
 
+        try {
+            session = sessionFactory.openSession();
+            transaction = session.beginTransaction();
+            // start a transaction
+            session.saveOrUpdate(data);
+            // commit transaction
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            e.printStackTrace();
+
+        }
     }
 }

@@ -59,15 +59,15 @@ public class Server extends WebSocketServer {
                 }
                 case "read": {
                     System.out.println("operation - read");
-                    // conn.send(operation.crudRead());
+                    conn.send(hibutl.crudRead(operation.data));
                     break;
                 }
                 case "delete": {
-                    operation.crudDelete();
+                    hibutl.crudDelete(operation.data);
                     break;
                 }
                 case "update": {
-                    operation.crudUpdate();
+                    hibutl.crudUpdate(operation.data);
                     break;
                 }
             }
