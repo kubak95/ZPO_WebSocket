@@ -49,10 +49,11 @@ public class Server extends WebSocketServer {
             // System.out.println("operation:\n" + message);
             CRUDOperations operation = gson.fromJson(message, CRUDOperations.class);
             String operationType = operation.operation;
+            HibernateUtil hibutl = new HibernateUtil();
             switch (operationType) {
                 case "create": {
                     // operation.crudCreate();
-                    HibernateUtil.crudCreate(operation.data);
+                    hibutl.crudCreate(operation.data);
                     System.out.println("operation - create");
                     break;
                 }

@@ -10,41 +10,21 @@ import org.hibernate.cfg.AnnotationConfiguration;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
 // import pl.kolaczynskijakub.websocketclient.DataEntity;
+import org.hibernate.service.ServiceRegistryBuilder;
 
 public class HibernateUtil {
 
-    private static SessionFactory sessionFactory = null;
-    // private static ServiceRegistry serviceRegistry = null;
-    private static Configuration configuration = new Configuration();
+    static Configuration configuration = new Configuration().configure("hibernate.cfg.xml");
+    private final static Properties properties = configuration.getProperties();
+    private final static ServiceRegistry serviceRegistry = new ServiceRegistryBuilder().applySettings(properties).buildServiceRegistry();
+    private final static SessionFactory sessionFactory = configuration.buildSessionFactory(serviceRegistry);
 
-    public static void crudCreate(DataEntity data) {
+    public void crudCreate(DataEntity data) {
 
-        // System.out.println("\n\n\n\n\n\n\n Linia 21 crudCreate - jest
-        // git\n\n\n\n\n\n");
-        // configuration.configure();
-        configuration.configure("hibernate.cfg.xml");
-        configuration.addAnnotatedClass(DataEntity.class);
-        // System.out.println("\n\n\n\n\n\n\n Linia 23 crudCreate - jest
-        // git\n\n\n\n\n\n");
-
-        StandardServiceRegistryBuilder ssrb = new StandardServiceRegistryBuilder()
-                .applySettings(configuration.getProperties());
-        // System.out.println("\n\n\n\n\n\n\n Linia 27 crudCreate - jest
-        // git\n\n\n\n\n\n");
-        // sessionFactory = new
-        // AnnotationConfiguration().configure().buildSessionFactory();
-        sessionFactory = configuration.buildSessionFactory(ssrb.build());
-        // System.out.println("\n\n\n\n\n\n\n Linia 29 crudCreate - jest
-        // git\n\n\n\n\n\n");
-
-        // Properties properties = configuration.getProperties();
-        // serviceRegistry = new
-        // StandardServiceRegistryBuilder().applySettings(properties).build();
-        // sessionFactory = configuration.buildSessionFactory(serviceRegistry);
+        // StandardServiceRegistryBuilder ssrb = new StandardServiceRegistryBuilder()
+        // .applySettings(configuration.getProperties());
         Transaction transaction = null;
         Session session = null;
-        // System.out.println("\n\n\n\n\n\n\n Linia 38 crudCreate - jest
-        // git\n\n\n\n\n\n");
 
         try {
             session = sessionFactory.openSession();
