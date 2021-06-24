@@ -1,4 +1,4 @@
-package pl.kolaczynskijakub.websocketclient.pl.kolaczynskijakub;
+package pl.kolaczynskijakub.websocketclient;
 
 import java.net.UnknownHostException;
 

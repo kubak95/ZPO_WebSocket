@@ -1,16 +1,16 @@
-package pl.kolaczynskijakub.websocketclient.pl.kolaczynskijakub;
+package pl.kolaczynskijakub.websocketclient;
 
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+
+import com.google.gson.Gson;
 
 import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.google.gson.Gson;
-import pl.kolaczynskijakub.websocketclient.pl.kolaczynskijakub.CRUDOperations;
 
 public class Server extends WebSocketServer {
     private static final Logger LOGGER = LoggerFactory.getLogger(Application.class);
@@ -46,17 +46,19 @@ public class Server extends WebSocketServer {
 
         try {
             Gson gson = new Gson();
-            System.out.println("operation:\n" + message);
+            // System.out.println("operation:\n" + message);
             CRUDOperations operation = gson.fromJson(message, CRUDOperations.class);
             String operationType = operation.operation;
-            System.out.println("operation - " + message + " operationType - " + operationType);
             switch (operationType) {
                 case "create": {
-                    operation.crudCreate();
+                    // operation.crudCreate();
+                    HibernateUtil.crudCreate(operation.data);
+                    System.out.println("operation - create");
                     break;
                 }
                 case "read": {
-                    conn.send(operation.crudRead());
+                    System.out.println("operation - read");
+                    // conn.send(operation.crudRead());
                     break;
                 }
                 case "delete": {
@@ -69,6 +71,7 @@ public class Server extends WebSocketServer {
                 }
             }
         } catch (Exception e) {
+            System.out.println(e);
             System.out.println("Not a valid json");
         }
 

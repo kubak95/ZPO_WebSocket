@@ -10,6 +10,6 @@
         <property name="connection.username"></property>        
         <property name="connection.password"></property>        
         <property name="hibernate.hbm2ddl.auto">update</property>        
-        <mapping class="pl.rybaksolutions.humster.entities.DataEntity"/>  
+        <mapping class="pl.kolaczynskijakub.websocketclient.DataEntity"/>  
   </session-factory>
   </hibernate-configuration>   
