@@ -2,14 +2,12 @@ package pl.kolaczynskijakub.websocketclient;
 
 import java.util.Properties;
 
+import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
-import org.hibernate.cfg.AnnotationConfiguration;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
-// import pl.kolaczynskijakub.websocketclient.DataEntity;
 import org.hibernate.service.ServiceRegistryBuilder;
 
 public class HibernateUtil {
@@ -21,92 +19,111 @@ public class HibernateUtil {
     private final static SessionFactory sessionFactory = configuration.buildSessionFactory(serviceRegistry);
 
     public void crudCreate(DataEntity data) {
-
-        // StandardServiceRegistryBuilder ssrb = new StandardServiceRegistryBuilder()
-        // .applySettings(configuration.getProperties());
         Transaction transaction = null;
         Session session = null;
 
         try {
             session = sessionFactory.openSession();
-            transaction = session.beginTransaction();
             // start a transaction
+            transaction = session.beginTransaction();
             session.save(data);
+            session.flush();
             // commit transaction
             transaction.commit();
-        } catch (Exception e) {
+        } catch (HibernateException e) {
+            System.out.println("ERROR: " + e.getMessage());
             if (transaction != null) {
                 transaction.rollback();
             }
-            e.printStackTrace();
+        } finally {
+            if (session != null) {
+                session.close();
+            }
         }
-
     }
 
     public String crudRead(DataEntity data) {
-        System.out.println("crudRead");
-
         Transaction transaction = null;
         Session session = null;
         String output = "";
         try {
             session = sessionFactory.openSession();
-            transaction = session.beginTransaction();
             // start a transaction
+            transaction = session.beginTransaction();
             DataEntity dataEntity = (DataEntity) session.get(DataEntity.class, data.id);
+            output = "ID - " + dataEntity.id;
+            if (dataEntity.name != null) {
+                output = output + " ; Name - " + dataEntity.name;
+            }
+            if (dataEntity.surname != null) {
+                output = output + " ; Surname - " + dataEntity.surname;
+            }
+            if (dataEntity.email != null) {
+                output = output + " ; Email - " + dataEntity.email;
+
+            }
+            session.flush();
             // commit transaction
-            output = "ID - " + String.valueOf(dataEntity.id) + " Name " + dataEntity.name + " Surname - "
-                    + dataEntity.surname + " Email - " + dataEntity.email;
             transaction.commit();
 
-        } catch (Exception e) {
+        } catch (HibernateException e) {
+            System.out.println("ERROR: " + e.getMessage());
             if (transaction != null) {
                 transaction.rollback();
             }
-            e.printStackTrace();
+        } finally {
+            if (session != null) {
+                session.close();
+            }
         }
         return output;
     }
 
     public void crudDelete(DataEntity data) {
-        System.out.println("crudDelete");
-
         Transaction transaction = null;
         Session session = null;
 
         try {
             session = sessionFactory.openSession();
-            transaction = session.beginTransaction();
             // start a transaction
+            transaction = session.beginTransaction();
             session.delete(data);
+            session.flush();
             // commit transaction
             transaction.commit();
-        } catch (Exception e) {
+        } catch (HibernateException e) {
+            System.out.println("ERROR: " + e.getMessage());
             if (transaction != null) {
                 transaction.rollback();
             }
-            e.printStackTrace();
+        } finally {
+            if (session != null) {
+                session.close();
+            }
         }
     }
 
     public void crudUpdate(DataEntity data) {
-        System.out.println("crudUpdate");
         Transaction transaction = null;
         Session session = null;
 
         try {
             session = sessionFactory.openSession();
-            transaction = session.beginTransaction();
             // start a transaction
+            transaction = session.beginTransaction();
             session.saveOrUpdate(data);
+            session.flush();
             // commit transaction
             transaction.commit();
-        } catch (Exception e) {
+        } catch (HibernateException e) {
+            System.out.println("ERROR: " + e.getMessage());
             if (transaction != null) {
                 transaction.rollback();
             }
-            e.printStackTrace();
-
+        } finally {
+            if (session != null) {
+                session.close();
+            }
         }
     }
 }

@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
 
 public class Server extends WebSocketServer {
     private static final Logger LOGGER = LoggerFactory.getLogger(Application.class);
-    private ArrayList<WebSocket> connections = new ArrayList<WebSocket>();
+    private final ArrayList<WebSocket> connections = new ArrayList<>();
 
     public Server(int port) throws UnknownHostException {
         super(new InetSocketAddress(port));
@@ -26,7 +26,6 @@ public class Server extends WebSocketServer {
 
     @Override
     public void onOpen(WebSocket conn, ClientHandshake handshake) {
-        // TODO Auto-generated method stub
         LOGGER.info("onOpen");
         connections.add(conn);
 
@@ -34,7 +33,6 @@ public class Server extends WebSocketServer {
 
     @Override
     public void onClose(WebSocket conn, int code, String reason, boolean remote) {
-        // TODO Auto-generated method stub
         LOGGER.info("onClose");
         connections.remove(conn);
 
@@ -42,17 +40,14 @@ public class Server extends WebSocketServer {
 
     @Override
     public void onMessage(WebSocket conn, String message) {
-        // TODO Auto-generated method stub
 
         try {
             Gson gson = new Gson();
-            // System.out.println("operation:\n" + message);
             CRUDOperations operation = gson.fromJson(message, CRUDOperations.class);
             String operationType = operation.operation;
             HibernateUtil hibutl = new HibernateUtil();
             switch (operationType) {
                 case "create": {
-                    // operation.crudCreate();
                     hibutl.crudCreate(operation.data);
                     System.out.println("operation - create");
                     break;
@@ -72,28 +67,24 @@ public class Server extends WebSocketServer {
                 }
             }
         } catch (Exception e) {
-            System.out.println(e);
-            System.out.println("Not a valid json");
+            System.out.println("ERROR: " + e.getMessage());
+            conn.send("Error during processing your request");
         }
 
         LOGGER.info("onMessage: {}", message);
-        conn.send("Yes, How Can I serve you ?");
-        connections.stream().filter(ws -> !conn.equals(ws)).forEach(ws -> {
-            ws.send(message);
-        });
+        conn.send("How Can I serve you ?");
+        connections.stream().filter(ws -> !conn.equals(ws)).forEach(ws -> ws.send(message));
 
     }
 
     @Override
     public void onError(WebSocket conn, Exception ex) {
-        // TODO Auto-generated method stub
         LOGGER.info("onError");
 
     }
 
     @Override
     public void onStart() {
-        // TODO Auto-generated method stub
         LOGGER.info("onStart");
 
     }

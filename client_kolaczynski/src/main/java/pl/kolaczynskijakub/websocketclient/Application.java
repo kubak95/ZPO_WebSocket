@@ -16,5 +16,4 @@ public class Application {
         Server s = new Server(8887);
         s.start();
     }
-
 }
